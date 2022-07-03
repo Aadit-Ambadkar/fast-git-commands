@@ -6,5 +6,7 @@ then
 fi
 
 echo "go was found; attempting to install with go"
+
+cd ..
 go build -o fit
 sudo cp fit /usr/local/bin

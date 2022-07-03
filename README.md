@@ -77,7 +77,6 @@ Examples:
 1. Navigate to `/bash-zsh`.
 2. Run `bash compile.sh`
 
-### Windows
-*This method is not tested. Please submit a pull request with any necessary changes if something is wrong.*
-1. Navigate to `/windows-bat`.
-2. Run `compile.bat`
+### Other Methods
+1. Run `go build -o fit` in this directory
+2. Add this directory to PATH, or move `fit` to a directory in PATH.
