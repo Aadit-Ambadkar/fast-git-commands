@@ -66,7 +66,6 @@ func main() {
 		fmt.Println("fit needs a command argument, run \x1b[33mfit --help\x1b[0m for more information")
 	}
 
-	fmt.Println(prefs.UseHTTPS)
 	command := os.Args[1]
 
 	if command == "clone" {
@@ -129,7 +128,15 @@ func main() {
 				return
 			}
 			arg := os.Args[i+1]
-			RunCommandInteractive(exec.Command("git", "checkout -b", arg))
+			RunCommandInteractive(exec.Command("git", "fetch"))
+			branch_in_upstream := RunCommand(exec.Command("bash", "-c git branch -a | egrep 'remotes/origin/", arg, "'"))
+			if branch_in_upstream {
+				RunCommandInteractive(exec.Command("git", "checkout --track origin/", arg))
+			} else {
+				RunCommandInteractive(exec.Command("git", "checkout -b", arg))
+				RunCommandInteractive(exec.Command("git", "push -u origin ", arg))
+			}
+			return
 		}
 		if len(os.Args) < 3 {
 			fmt.Println("command branch requires branch name")
@@ -141,7 +148,25 @@ func main() {
 	}
 
 	if command == "push" {
+		if ok, _ := ArgsHaveOption("none", "n"); ok {
+			RunCommandInteractive(exec.Command("git", "push"))
+			return
+		}
 
+		if len(os.Args) < 3 {
+			fmt.Println("command push requires commit message")
+			return
+		}
+		msg := os.Args[2]
+		RunCommandInteractive(exec.Command("git", "add --all"))
+		RunCommandInteractive(exec.Command("git", "commit -a -m \"", msg, "\""))
+		RunCommandInteractive(exec.Command("git", "push"))
+		return
+	}
+
+	if command == "pull" {
+		RunCommandInteractive(exec.Command("git", "pull"))
+		return
 	}
 
 	if command == "set" {
@@ -172,7 +197,7 @@ func main() {
 			prefs.UseHTTPS = false
 		}
 
-		fmt.Println(writeToFileAsJSON(prefs, prefsFile))
+		writeToFileAsJSON(prefs, prefsFile)
 		return
 	}
 }
@@ -208,11 +233,22 @@ func readFromFileAsJSON(fileName string) (Preferances, error) {
 }
 
 func RunCommandInteractive(cmd *exec.Cmd) {
+	cmd = exec.Command("bash", "-c", cmd.String())
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	fmt.Println(cmd)
 	if err := cmd.Run(); err != nil {
 		return
 	}
 }
+
+func RunCommand(cmd *exec.Cmd) bool {
+	cmd = exec.Command("bash", "-c", cmd.String())
+	_, err := cmd.Output()
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+// test comment
