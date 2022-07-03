@@ -128,7 +128,7 @@ func main() {
 				return
 			}
 			arg := os.Args[i+1]
-			RunCommandInteractive(exec.Command("git", "fetch"))
+			RunCommandInteractive(exec.Command("git", "fetch --prune"))
 			branch_in_upstream := RunCommand(exec.Command("bash", "-c git branch -a | egrep 'remotes/origin/", arg, "'"))
 			if branch_in_upstream {
 				RunCommandInteractive(exec.Command("git", "checkout --track origin/", arg))
