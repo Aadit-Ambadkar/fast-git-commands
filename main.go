@@ -200,6 +200,14 @@ func main() {
 		writeToFileAsJSON(prefs, prefsFile)
 		return
 	}
+
+	if command == "raw" {
+		if len(os.Args) < 3 {
+			fmt.Println("command raw requires command string (in quotation marks)")
+		}
+		arg := os.Args[2]
+		RunCommandInteractive(exec.Command("git", arg))
+	}
 }
 
 func ArgsHaveOption(long, short string) (hasOption bool, foundAt int) {
