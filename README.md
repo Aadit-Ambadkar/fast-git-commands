@@ -2,7 +2,7 @@
 I mean really, git commands take too long to type
 
 ## What does this do?
-Instead of manually entering multiple commands to perform basic git operations, use fit to reduce the amound of typing you do.
+Instead of manually entering multiple commands to perform basic git operations, use fit to reduce the amount of typing you do.
 
 ## Help
 ```yaml
