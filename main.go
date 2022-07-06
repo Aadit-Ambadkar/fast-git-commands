@@ -159,7 +159,7 @@ func main() {
 		}
 		msg := os.Args[2]
 		RunCommandInteractive(exec.Command("git", "add --all"))
-		RunCommandInteractive(exec.Command("git", "commit -a -m \"", msg, "\""))
+		RunCommandInteractive(exec.Command("git", "commit -S -a -m \"", msg, "\""))
 		RunCommandInteractive(exec.Command("git", "push"))
 		return
 	}
