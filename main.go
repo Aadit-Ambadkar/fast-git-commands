@@ -75,7 +75,7 @@ func main() {
 				return
 			}
 			arg := os.Args[i+1]
-			RunCommandInteractive(exec.Command("git", "clone", arg))
+			RunCommandInteractive(exec.Command("git", "clone", "--recurse-submodules", arg))
 			return
 		}
 		if len(os.Args) < 3 {
@@ -93,7 +93,7 @@ func main() {
 				repo_string = "git@github.com:" + arg + "/" + repo + ".git"
 			}
 
-			RunCommandInteractive(exec.Command("git", "clone", repo_string))
+			RunCommandInteractive(exec.Command("git", "clone", "--recurse-submodules", repo_string))
 			return
 		}
 
@@ -104,7 +104,7 @@ func main() {
 			repo_string = "git@github.com:" + prefs.Username + "/" + repo + ".git"
 		}
 
-		RunCommandInteractive(exec.Command("git", "clone", repo_string))
+		RunCommandInteractive(exec.Command("git", "clone", "--recurse-submodules", repo_string))
 		return
 	}
 
@@ -161,11 +161,29 @@ func main() {
 		RunCommandInteractive(exec.Command("git", "add --all"))
 		RunCommandInteractive(exec.Command("git", "commit -S -a -m \"", msg, "\""))
 		RunCommandInteractive(exec.Command("git", "push"))
+
+		RunCommandInteractive(exec.Command("git", "submodule", "foreach", "git", "add --all"))
+		RunCommandInteractive(exec.Command("git", "submodule", "foreach", "git", "commit -S -a -m \"", msg, "\""))
+		RunCommandInteractive(exec.Command("git", "submodule", "foreach", "git", "push"))
+		return
+	}
+
+	if command == "commit" {
+		if len(os.Args) < 3 {
+			fmt.Println("command push requires commit message")
+			return
+		}
+		msg := os.Args[2]
+		RunCommandInteractive(exec.Command("git", "add --all"))
+		RunCommandInteractive(exec.Command("git", "commit -S -a -m \"", msg, "\""))
+
+		RunCommandInteractive(exec.Command("git", "submodule", "foreach", "git", "add --all"))
+		RunCommandInteractive(exec.Command("git", "submodule", "foreach", "git", "commit -S -a -m \"", msg, "\""))
 		return
 	}
 
 	if command == "pull" {
-		RunCommandInteractive(exec.Command("git", "pull"))
+		RunCommandInteractive(exec.Command("git", "pull", "--recurse-submodules"))
 		return
 	}
 
